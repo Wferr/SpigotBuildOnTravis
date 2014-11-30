@@ -1,0 +1,16 @@
+language: java
+install:
+    - wget https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
+script:
+    # grep so that download counts don't appear in log files
+    - java -jar BuildTools.jar | grep -vE "[^/ ]*/[^/ ]*\s*KB\s*$" | grep -v "^\s*$"
+    - find Spigot/Spigot-Server/target/*.jar
+deploy:
+    provider: releases
+    api-key: "$GITHUB_OATH_TOKEN"
+    file:
+        - "Spigot/Spigot-Server/target/spigot-1.8-R0.1-SNAPSHOT.jar"
+    skip_cleanup: true
+    on:
+        tags: true
+        all_branches: true
